@@ -1,0 +1,38 @@
+name: Check
+
+on:
+  workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        description: 'Token of the Platform Builders server'
+        required: true
+
+jobs:
+  sonar:
+    if: startsWith(github.head_ref, 'dependabot/') == false # ignore the pull request which comes from user dependabot.
+    name: Sonar Analyze
+    runs-on: ["sonar-codewall-gke"]
+    steps:
+      - uses: platformbuilders/sonar-action@v1.0.0
+        with:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+  check:
+    runs-on: ubuntu-latest
+    needs: sonar
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Set NPM Variables
+        run: echo "$PACKAGES_NPMRC" > .npmrc
+        env:
+          PACKAGES_NPMRC: ${{ secrets.PACKAGES_NPMRC }}
+      - name: Install packages
+        run: yarn install
+      - name: Tests
+        run: yarn test
+      - name: Linter
+        run: yarn lint

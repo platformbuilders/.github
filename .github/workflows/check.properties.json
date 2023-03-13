@@ -1,0 +1,11 @@
+{
+  "name": "Check",
+  "description": "Check Frontend",
+  "iconName": "check-circle-fill-16",
+  "categories": [
+    "TypeScript"
+  ],
+  "filePatterns": [
+    "package.json$"
+  ]
+}
