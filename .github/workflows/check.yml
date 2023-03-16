@@ -6,6 +6,12 @@ on:
       SONAR_TOKEN:
         description: 'Token of the Platform Builders server'
         required: true
+      SONAR_HOST_URL:
+        description: 'Url of the Platform Builders server'
+        required: true
+      PACKAGES_NPMRC:
+        description: 'Token of the Builders Github Packages'
+        required: true
 
 jobs:
   sonar:
