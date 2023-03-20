@@ -15,14 +15,10 @@ on:
 
 jobs:
   sonar:
-    if: startsWith(github.head_ref, 'dependabot/') == false # ignore the pull request which comes from user dependabot.
-    name: Sonar Analyze
-    runs-on: ["sonar-codewall-gke"]
-    steps:
-      - uses: platformbuilders/sonar-action@v1.0.0
-        with:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    uses: ./sonar.yml
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
   check:
     name: Check

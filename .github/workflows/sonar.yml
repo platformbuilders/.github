@@ -1,0 +1,22 @@
+name: Sonar
+
+on:
+  workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        description: 'Token of the Platform Builders server'
+        required: true
+      SONAR_HOST_URL:
+        description: 'Url of the Platform Builders server'
+        required: true
+
+jobs:
+  sonar:
+    if: startsWith(github.head_ref, 'dependabot/') == false # ignore the pull request which comes from user dependabot.
+    name: Sonar Analyze
+    runs-on: ['sonar-codewall-gke']
+    steps:
+      - uses: platformbuilders/sonar-action@v1.0.0
+        with:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
