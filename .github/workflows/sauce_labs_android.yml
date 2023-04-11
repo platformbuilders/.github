@@ -1,0 +1,61 @@
+name: Sauce Labs Android
+
+on:
+  workflow_call:
+    secrets:
+      DEVOPS_LOGIN_TOKEN:
+        description: 'Token of the DevOps Account'
+        required: true
+      SAUCE_LABS_ACCESS_KEY:
+        description: 'Sauce Labs Access Key'
+        required: true
+      SAUCE_LABS_ID:
+        description: 'Sauce Labs ID'
+        required: true
+
+jobs:
+  test:
+    name:  Android Testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Template Appium
+        run: |
+          TEMPALTE_APPIUM_APP="https://${{ secrets.DEVOPS_LOGIN_TOKEN }}:x-oauth-basic@github.com/platformbuilders/template-appium-app.git"
+          git clone $TEMPALTE_APPIUM_APP
+          cd template-appium-app
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+
+      - name: Install dependency
+        uses: borales/actions-yarn@v3.0.0
+        with:
+          cmd: install
+
+      - name: Running Android testing
+        uses: borales/actions-yarn@v3.0.0
+        with:
+          cmd: sauce:android:build
+        env:
+          SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+          ID_SAUCELABS: ${{ secrets.SAUCE_LABS_ID }}
+
+      - name: Slack Notification - failure
+        if: ${{ failure() }}
+        run: |
+          ls reports/html-reports/screenshots/
+          curl -F file=@reports/html-reports/screenshots/TesteFalhou.png -F "initial_comment=:android: Android - Teste Falhou :x: :sob:" -F channels=C012TP9BAB1 -H "Authorization: Bearer ${{ secrets.JARBIS_TOKEN }}" https://slack.com/api/files.upload
+
+      - name: Slack Message
+        if: ${{ success() }}
+        run: |
+          ls reports/html-reports/screenshots/
+          curl -F file=@reports/html-reports/screenshots/TelaInicial.png -F "initial_comment=:android: Android - Teste Realizado com Sucesso :white_check_mark: :rocket:" -F channels=C012TP9BAB1 -H "Authorization: Bearer ${{ secrets.JARBIS_TOKEN }}" https://slack.com/api/files.upload
+
+      - name: Archive result test
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: report test
+          path: reports/
