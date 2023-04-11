@@ -28,12 +28,9 @@ jobs:
         run: |
           ls -lah
           cd template-appium-app
-
-      - name: Install packages
-        run: yarn install
-
-      - name: Running Android testing
-        run: yarn run sauce:android:build
+          pwd
+          yarn install
+          yarn run sauce:android:build
         env:
           SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_LABS_ACCESS_KEY }}
           ID_SAUCELABS: ${{ env.SAUCE_LABS_ID }}
