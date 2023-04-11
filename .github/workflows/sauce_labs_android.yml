@@ -20,9 +20,7 @@ jobs:
           node-version: '14.x'
 
       - name: Clone Template Appium
-        run: |
-          TEMPALTE_APPIUM_APP="https://${{ secrets.DEVOPS_LOGIN_TOKEN }}:x-oauth-basic@github.com/platformbuilders/template-appium.git"
-          git clone $TEMPALTE_APPIUM
+        run: git clone "https://${{ secrets.DEVOPS_LOGIN_TOKEN }}:x-oauth-basic@github.com/platformbuilders/template-appium.git"
 
       - name: Build
         run: |
