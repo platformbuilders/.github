@@ -17,6 +17,10 @@ on:
         type: string
         description: 'Name of the Project to Build App'
         required: true
+      SLACK_CHANNEL_CODE:
+        type: string
+        description: 'Code of the Slack Channel'
+        required: true
 
 jobs:
   test:
@@ -58,7 +62,7 @@ jobs:
           ls -lah
           pwd
           ls reports/html-reports/screenshots/
-          curl -F file=@reports/html-reports/screenshots/TesteFalhou.png -F "initial_comment=:android: Android - Teste Falhou :x: :sob:" -F channels=C012TP9BAB1 -H "Authorization: Bearer ${{ secrets.JARBIS_TOKEN }}" https://slack.com/api/files.upload
+          curl -F file=@reports/html-reports/screenshots/TesteFalhou.png -F "initial_comment=:android: ${{ inputs.PROJECT_NAME }} Android - Teste Falhou :x: :sob:" -F channels=${{ inputs.SLACK_CHANNEL_CODE }} -H "Authorization: Bearer ${{ secrets.JARBIS_TOKEN }}" https://slack.com/api/files.upload
 
       - name: Slack Message
         if: ${{ success() }}
@@ -67,7 +71,7 @@ jobs:
           ls -lah
           pwd
           ls reports/html-reports/screenshots/
-          curl -F file=@reports/html-reports/screenshots/TelaInicial.png -F "initial_comment=:android: Android - Teste Realizado com Sucesso :white_check_mark: :rocket:" -F channels=C012TP9BAB1 -H "Authorization: Bearer ${{ secrets.JARBIS_TOKEN }}" https://slack.com/api/files.upload
+          curl -F file=@reports/html-reports/screenshots/TelaInicial.png -F "initial_comment=:android: ${{ inputs.PROJECT_NAME }} Android - Teste Realizado com Sucesso :white_check_mark: :rocket:" -F channels=${{ inputs.SLACK_CHANNEL_CODE }} -H "Authorization: Bearer ${{ secrets.JARBIS_TOKEN }}" https://slack.com/api/files.upload
 
       - name: Archive result test
         if: success() || failure()
