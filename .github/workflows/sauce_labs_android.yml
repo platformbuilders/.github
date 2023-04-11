@@ -23,11 +23,8 @@ jobs:
         run: |
           TEMPALTE_APPIUM_APP="https://${{ secrets.DEVOPS_LOGIN_TOKEN }}:x-oauth-basic@github.com/platformbuilders/template-appium-app.git"
           git clone $TEMPALTE_APPIUM_APP
-
-      - name: List Files
-        run: |
-          ls -lah
           cd template-appium-app
+          ls -lah
           pwd
           yarn install
           yarn run sauce:android:build
