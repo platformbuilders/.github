@@ -21,13 +21,17 @@ jobs:
           git clone $TEMPALTE_APPIUM_APP
           cd template-appium-app
 
-      - name: Upload File to the Saucelabs
+      # - name: Upload File to the Saucelabs
+      #   run: |
+      #     ID_SAUCELABS=$(curl -u "qabuilders:${{ secrets.SAUCE_LABS_ACCESS_KEY }}" --location \
+      #     --request POST 'https://api.us-west-1.saucelabs.com/v1/storage/upload' \
+      #     --form 'payload=@"template-appium-app/Android/app-release.apk"' \
+      #     --form 'name="app-release.apk"' | jq '.item.id')
+      #     echo "ID_SAUCELABS=$ID_SAUCELABS" >> $GITHUB_ENV
+
+      - name: List Files
         run: |
-          ID_SAUCELABS=$(curl -u "qabuilders:${{ secrets.SAUCE_LABS_ACCESS_KEY }}" --location \
-          --request POST 'https://api.us-west-1.saucelabs.com/v1/storage/upload' \
-          --form 'payload=@"template-appium-app/Android/app-release.apk"' \
-          --form 'name="app-release.apk"' | jq '.item.id')
-          echo "ID_SAUCELABS=$ID_SAUCELABS" >> $GITHUB_ENV
+          ls -lah
 
       - uses: actions/setup-node@v2
         with:
