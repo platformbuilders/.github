@@ -9,6 +9,9 @@ on:
       SAUCE_LABS_ACCESS_KEY:
         description: 'Sauce Labs Access Key'
         required: true
+      ACCESS_TOKEN:
+        description: 'Personal Token to clone private repositories'
+        required: true
 
 jobs:
   test:
@@ -24,7 +27,7 @@ jobs:
         with:
           owner: 'platformbuilders'
           repository: 'template-appium-app'
-          access-token: ${{ secrets.CLONE_ACCESS_TOKEN }}
+          access-token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Build
         run: |
