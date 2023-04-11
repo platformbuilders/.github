@@ -9,9 +9,6 @@ on:
       SAUCE_LABS_ACCESS_KEY:
         description: 'Sauce Labs Access Key'
         required: true
-      SAUCE_LABS_ID:
-        description: 'Sauce Labs ID'
-        required: true
 
 jobs:
   test:
@@ -23,6 +20,14 @@ jobs:
           TEMPALTE_APPIUM_APP="https://${{ secrets.DEVOPS_LOGIN_TOKEN }}:x-oauth-basic@github.com/platformbuilders/template-appium-app.git"
           git clone $TEMPALTE_APPIUM_APP
           cd template-appium-app
+
+      - name: Upload File to the Saucelabs
+        run: |
+          ID_SAUCELABS=$(curl -u "qabuilders:${{ secrets.SAUCE_LABS_ACCESS_KEY }}" --location \
+          --request POST 'https://api.us-west-1.saucelabs.com/v1/storage/upload' \
+          --form 'payload=@"template-appium-app/Android/app-release.apk"' \
+          --form 'name="app-release.apk"' | jq '.item.id')
+          echo "ID_SAUCELABS=$ID_SAUCELABS" >> $GITHUB_ENV
 
       - uses: actions/setup-node@v2
         with:
@@ -38,8 +43,8 @@ jobs:
         with:
           cmd: sauce:android:build
         env:
-          SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-          ID_SAUCELABS: ${{ secrets.SAUCE_LABS_ID }}
+          SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_LABS_ACCESS_KEY }}
+          ID_SAUCELABS: ${{ env.SAUCE_LABS_ID }}
 
       - name: Slack Notification - failure
         if: ${{ failure() }}
