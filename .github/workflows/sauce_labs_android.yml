@@ -13,7 +13,6 @@ on:
 jobs:
   test:
     name:  Android Testing
-    needs: [upload_apk]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-node@v2
