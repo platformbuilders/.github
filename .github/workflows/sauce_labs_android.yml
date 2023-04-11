@@ -35,6 +35,7 @@ jobs:
       - name: Slack Notification - failure
         if: ${{ failure() }}
         run: |
+          cd template-appium
           ls -lah
           pwd
           ls reports/html-reports/screenshots/
@@ -43,6 +44,7 @@ jobs:
       - name: Slack Message
         if: ${{ success() }}
         run: |
+          cd template-appium
           ls -lah
           pwd
           ls reports/html-reports/screenshots/
@@ -53,4 +55,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: report test
-          path: reports/
+          path: template-appium/reports/
