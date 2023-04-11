@@ -9,9 +9,6 @@ on:
       SAUCE_LABS_ACCESS_KEY:
         description: 'Sauce Labs Access Key'
         required: true
-      ACCESS_TOKEN:
-        description: 'Personal Token to clone private repositories'
-        required: true
 
 jobs:
   test:
@@ -23,17 +20,14 @@ jobs:
           node-version: '14.x'
 
       - name: Clone Template Appium
-        uses: GuillaumeFalourd/clone-github-repo-action@v2
-        with:
-          owner: 'platformbuilders'
-          repository: 'template-appium-app'
-          access-token: ${{ secrets.ACCESS_TOKEN }}
+        run: |
+          TEMPALTE_APPIUM_APP="https://${{ secrets.DEVOPS_LOGIN_TOKEN }}:x-oauth-basic@github.com/platformbuilders/template-appium.git"
+          git clone $TEMPALTE_APPIUM
 
       - name: Build
         run: |
-          cd template-appium-app
+          cd template-appium
           ls -lah
-          pwd
           yarn install
           yarn run sauce:android:build
         env:
