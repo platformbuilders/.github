@@ -9,6 +9,14 @@ on:
       SAUCE_LABS_ACCESS_KEY:
         description: 'Sauce Labs Access Key'
         required: true
+      JARBIS_TOKEN:
+        description: 'Jarbis Token'
+        required: true
+    inputs:
+      PROJECT_NAME:
+        type: string
+        description: 'Name of the Project to Build App'
+        required: true
 
 jobs:
   test:
@@ -20,7 +28,7 @@ jobs:
           node-version: '14.x'
 
       - name: Clone Template Appium APP
-        run: git clone "https://${{ secrets.DEVOPS_LOGIN_TOKEN }}:x-oauth-basic@github.com/platformbuilders/template-appium-app.git"
+        run: git clone "https://${{ secrets.DEVOPS_LOGIN_TOKEN }}:x-oauth-basic@github.com/platformbuilders/${{ inputs.PROJECT_NAME }}.git"
 
       - name: Upload File to the Saucelabs
         run: |
