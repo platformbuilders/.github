@@ -15,37 +15,25 @@ jobs:
     name:  Android Testing
     runs-on: ubuntu-latest
     steps:
-      - name: Clone Template Appium
-        run: |
-          TEMPALTE_APPIUM_APP="https://${{ secrets.DEVOPS_LOGIN_TOKEN }}:x-oauth-basic@github.com/platformbuilders/template-appium-app.git"
-          git clone $TEMPALTE_APPIUM_APP
-          cd template-appium-app
-
-      # - name: Upload File to the Saucelabs
-      #   run: |
-      #     ID_SAUCELABS=$(curl -u "qabuilders:${{ secrets.SAUCE_LABS_ACCESS_KEY }}" --location \
-      #     --request POST 'https://api.us-west-1.saucelabs.com/v1/storage/upload' \
-      #     --form 'payload=@"template-appium-app/Android/app-release.apk"' \
-      #     --form 'name="app-release.apk"' | jq '.item.id')
-      #     echo "ID_SAUCELABS=$ID_SAUCELABS" >> $GITHUB_ENV
-
-      - name: List Files
-        run: |
-          ls -lah
-
       - uses: actions/setup-node@v2
         with:
           node-version: '14.x'
 
-      - name: Install dependency
-        uses: borales/actions-yarn@v3.0.0
-        with:
-          cmd: install
+      - name: Clone Template Appium
+        run: |
+          TEMPALTE_APPIUM_APP="https://${{ secrets.DEVOPS_LOGIN_TOKEN }}:x-oauth-basic@github.com/platformbuilders/template-appium-app.git"
+          git clone $TEMPALTE_APPIUM_APP
+
+      - name: List Files
+        run: |
+          ls -lah
+          cd template-appium-app
+
+      - name: Install packages
+        run: yarn install
 
       - name: Running Android testing
-        uses: borales/actions-yarn@v3.0.0
-        with:
-          cmd: sauce:android:build
+        run: yarn run sauce:android:build
         env:
           SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_LABS_ACCESS_KEY }}
           ID_SAUCELABS: ${{ env.SAUCE_LABS_ID }}
