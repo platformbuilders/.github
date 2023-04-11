@@ -22,7 +22,7 @@ jobs:
       - name: Clone Template Appium
         run: git clone "https://${{ secrets.DEVOPS_LOGIN_TOKEN }}:x-oauth-basic@github.com/platformbuilders/template-appium.git"
 
-      - name: Build
+      - name: Build and Test
         run: |
           cd template-appium
           ls -lah
@@ -35,12 +35,16 @@ jobs:
       - name: Slack Notification - failure
         if: ${{ failure() }}
         run: |
+          ls -lah
+          pwd
           ls reports/html-reports/screenshots/
           curl -F file=@reports/html-reports/screenshots/TesteFalhou.png -F "initial_comment=:android: Android - Teste Falhou :x: :sob:" -F channels=C012TP9BAB1 -H "Authorization: Bearer ${{ secrets.JARBIS_TOKEN }}" https://slack.com/api/files.upload
 
       - name: Slack Message
         if: ${{ success() }}
         run: |
+          ls -lah
+          pwd
           ls reports/html-reports/screenshots/
           curl -F file=@reports/html-reports/screenshots/TelaInicial.png -F "initial_comment=:android: Android - Teste Realizado com Sucesso :white_check_mark: :rocket:" -F channels=C012TP9BAB1 -H "Authorization: Bearer ${{ secrets.JARBIS_TOKEN }}" https://slack.com/api/files.upload
 
