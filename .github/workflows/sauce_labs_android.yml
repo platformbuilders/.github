@@ -13,11 +13,23 @@ on:
 jobs:
   test:
     name:  Android Testing
+    needs: [upload_apk]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-node@v2
         with:
           node-version: '14.x'
+
+      - name: Clone Template Appium APP
+        run: git clone "https://${{ secrets.DEVOPS_LOGIN_TOKEN }}:x-oauth-basic@github.com/platformbuilders/template-appium-app.git"
+
+      - name: Upload File to the Saucelabs
+        run: |
+          ID_SAUCELABS=$(curl -u "qabuilders:${{ secrets.SAUCE_LABS_ACCESS_KEY }}" --location \
+          --request POST 'https://api.us-west-1.saucelabs.com/v1/storage/upload' \
+          --form 'payload=@"template-appium-app/Android/app-release.apk"' \
+          --form 'name="app-release.apk"' | jq '.item.id') 
+          echo "ID_SAUCELABS=$ID_SAUCELABS" >> $GITHUB_ENV
 
       - name: Clone Template Appium
         run: git clone "https://${{ secrets.DEVOPS_LOGIN_TOKEN }}:x-oauth-basic@github.com/platformbuilders/template-appium.git"
