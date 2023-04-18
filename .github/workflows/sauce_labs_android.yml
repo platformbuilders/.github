@@ -31,6 +31,8 @@ jobs:
         with:
           node-version: '14.x'
 
+      # @TODO:
+      # instalar as dependencias do projeto, rodar comando de build
       - name: Clone Template Appium APP
         run: git clone "https://${{ secrets.DEVOPS_LOGIN_TOKEN }}:x-oauth-basic@github.com/platformbuilders/${{ inputs.PROJECT_NAME }}.git"
 
@@ -59,18 +61,12 @@ jobs:
         if: ${{ failure() }}
         run: |
           cd template-appium
-          ls -lah
-          pwd
-          ls reports/html-reports/screenshots/
           curl -F file=@reports/html-reports/screenshots/TesteFalhou.png -F "initial_comment=:android: ${{ inputs.PROJECT_NAME }} Android - Teste Falhou :x: :sob:" -F channels=${{ inputs.SLACK_CHANNEL_CODE }} -H "Authorization: Bearer ${{ secrets.JARBIS_TOKEN }}" https://slack.com/api/files.upload
 
       - name: Slack Message
         if: ${{ success() }}
         run: |
           cd template-appium
-          ls -lah
-          pwd
-          ls reports/html-reports/screenshots/
           curl -F file=@reports/html-reports/screenshots/TelaInicial.png -F "initial_comment=:android: ${{ inputs.PROJECT_NAME }} Android - Teste Realizado com Sucesso :white_check_mark: :rocket:" -F channels=${{ inputs.SLACK_CHANNEL_CODE }} -H "Authorization: Bearer ${{ secrets.JARBIS_TOKEN }}" https://slack.com/api/files.upload
 
       - name: Archive result test
