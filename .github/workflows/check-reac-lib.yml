@@ -1,0 +1,29 @@
+name: Check
+
+on:
+  workflow_call:
+    secrets:
+      PACKAGES_NPMRC:
+        description: 'Token of the Builders Github Packages'
+        required: false
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '18.x'
+      - if: ${{ !!PACKAGES_NPMRC }}
+        name: Set NPM Variables
+        run: echo "$PACKAGES_NPMRC" > .npmrc
+        env:
+          PACKAGES_NPMRC: ${{ secrets.PACKAGES_NPMRC }}
+      - name: Install packages
+        run: yarn install
+      - name: Tests
+        run: yarn test
+      - name: Linter
+        run: yarn lint
