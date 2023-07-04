@@ -16,11 +16,11 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '18.x'
-      - if: ${{ !!PACKAGES_NPMRC }}
-        name: Set NPM Variables
-        run: echo "$PACKAGES_NPMRC" > .npmrc
         env:
           PACKAGES_NPMRC: ${{ secrets.PACKAGES_NPMRC }}
+      - if: ${{ env.PACKAGES_NPMRC != null}}
+        name: Set NPM Variables
+        run: echo "$PACKAGES_NPMRC" > .npmrc
       - name: Install packages
         run: yarn install
       - name: Tests
