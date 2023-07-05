@@ -54,7 +54,7 @@ jobs:
       - name: Install and Build
         run: yarn install && yarn build
       - name: Publish
-        run: echo "$NODE_AUTH_TOKEN" && npm publish --access public
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - uses: actions/setup-node@v2
