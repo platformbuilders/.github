@@ -12,6 +12,13 @@ on:
       PACKAGES_NPMRC:
         description: 'Token of the Builders Github Packages'
         required: false
+    inputs:
+      PROJECT_PRIVATE:
+        type: boolean
+        description: 'If project is private'
+        required: false
+        default: false
+
 
 jobs:
   check-secret:
@@ -53,8 +60,14 @@ jobs:
           PACKAGES_NPMRC: ${{ secrets.PACKAGES_NPMRC }}
       - name: Install and Build
         run: yarn install && yarn build
-      - name: Publish
+      - if: inputs.PROJECT_PRIVATE != 'true'
+        name: Publish NPM Public
         run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - if: inputs.PROJECT_PRIVATE == 'true'
+        name: Publish NPM Private
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - uses: actions/setup-node@v2
@@ -63,8 +76,14 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
           scope: '@platformbuilders'
       # Publish to GitHub Packages
-      - if: needs.check-secret.outputs.GITHUB_PACKAGES_TOKEN == 'true'
-        name: Publish Github Packages
+      - if: needs.check-secret.outputs.GITHUB_PACKAGES_TOKEN == 'true' && inputs.PROJECT_PRIVATE != 'true'
+        name: Publish Public Github Packages
         run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_PACKAGES_TOKEN }}
+      # Publish Private GitHub Packages
+      - if: needs.check-secret.outputs.GITHUB_PACKAGES_TOKEN == 'true' && inputs.PROJECT_PRIVATE == 'true'
+        name: Publish Private Github Packages
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_PACKAGES_TOKEN }}
