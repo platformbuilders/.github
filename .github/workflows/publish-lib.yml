@@ -60,7 +60,8 @@ jobs:
           PACKAGES_NPMRC: ${{ secrets.PACKAGES_NPMRC }}
       - name: Install and Build
         run: yarn install && yarn build
-      - name: Publish Public
+      - if: inputs.PROJECT_PRIVATE != 'true'
+        name: Publish Public
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
