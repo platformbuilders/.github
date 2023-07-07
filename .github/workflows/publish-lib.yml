@@ -61,7 +61,7 @@ jobs:
       - name: Install and Build
         run: yarn install && yarn build
       - if: inputs.PROJECT_PRIVATE != 'true'
-        name: Publish Public
+        name: Publish NPM Public
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
