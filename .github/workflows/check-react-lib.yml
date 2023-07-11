@@ -11,13 +11,13 @@ jobs:
   check-secret:
       runs-on: ubuntu-latest
       outputs:
-        PACKAGES_NPMRC: ${{ steps.PACKAGES_NPMRC.outputs.defined }}
+        PACKAGES_NPMRC: ${{ steps.PACKAGES_NPMRC.outputs.token_npmrc }}
       steps:
           - id: PACKAGES_NPMRC
             env:
                 PACKAGES_NPMRC: ${{ secrets.PACKAGES_NPMRC }}
             if: "${{ env.PACKAGES_NPMRC != '' }}"
-            run: echo "::set-output name=defined::true"
+            run: echo "token_npmrc=true" >> $GITHUB_OUTPUT
   check:
     name: Check
     runs-on: ubuntu-latest
