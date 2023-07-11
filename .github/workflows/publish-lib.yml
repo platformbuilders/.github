@@ -28,17 +28,17 @@ jobs:
             env:
                 PACKAGES_NPMRC: ${{ secrets.PACKAGES_NPMRC }}
             if: "${{ env.PACKAGES_NPMRC != '' }}"
-            run: echo "::set-output name=token_npmrc::true"
+            run: echo "token_npmrc=true" >> $GITHUB_OUTPUT
           - id: NPM_TOKEN
             env:
                 NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
             if: "${{ env.NPM_TOKEN != '' }}"
-            run: echo "::set-output name=token_npm::true"
+            run: echo "token_npm=true" >> $GITHUB_OUTPUT
           - id: GITHUB_PACKAGES_TOKEN
             env:
                 GITHUB_PACKAGES_TOKEN: ${{ secrets.GITHUB_PACKAGES_TOKEN }}
             if: "${{ env.GITHUB_PACKAGES_TOKEN != '' }}"
-            run: echo "::set-output name=token_github::true"
+            run: echo "token_github=true" >> $GITHUB_OUTPUT
       outputs:
         GITHUB_PACKAGES_TOKEN: ${{ steps.GITHUB_PACKAGES_TOKEN.outputs.token_github }}
         NPM_TOKEN: ${{ steps.NPM_TOKEN.outputs.token_npm }}
