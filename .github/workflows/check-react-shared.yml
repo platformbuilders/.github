@@ -8,6 +8,7 @@ on:
         required: false
     inputs:
       IS_REQUIRED_SET_PACKAGES_NPMRC:
+        type: string
         description: 'Is required set on .npmrc the PACKAGES_NPMRC'
         required: false
         default: true
