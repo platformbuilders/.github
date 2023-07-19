@@ -25,6 +25,6 @@ jobs:
     uses: ./.github/workflows/check-react-shared.yml
     needs: sonar
     secrets:
-      PACKAGES_NPMRC: ${{ env.PACKAGES_NPMRC }}
+      PACKAGES_NPMRC: ${{ secrets.PACKAGES_NPMRC }}
     with:
       IS_REQUIRED_SET_PACKAGES_NPMRC: true
