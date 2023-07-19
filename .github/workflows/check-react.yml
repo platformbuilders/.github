@@ -1,4 +1,4 @@
-name: Check
+name: Check React With Sonar
 
 on:
   workflow_call:
@@ -21,21 +21,10 @@ jobs:
       SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
   check:
-    name: Check
-    runs-on: ubuntu-latest
+    name: Check React
+    uses: ./.github/workflows/check-react-shared.yml
     needs: sonar
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-      - name: Set NPM Variables
-        run: echo "$PACKAGES_NPMRC" > .npmrc
-        env:
-          PACKAGES_NPMRC: ${{ secrets.PACKAGES_NPMRC }}
-      - name: Install packages
-        run: yarn install
-      - name: Tests
-        run: yarn test
-      - name: Linter
-        run: yarn lint
+    secrets:
+      PACKAGES_NPMRC: ${{ env.PACKAGES_NPMRC }}
+    with:
+      IS_REQUIRED_SET_PACKAGES_NPMRC: true

@@ -1,4 +1,4 @@
-name: Check
+name: Check React Lib
 
 on:
   workflow_call:
@@ -9,32 +9,21 @@ on:
 
 jobs:
   check-secret:
-      runs-on: ubuntu-latest
-      outputs:
-        PACKAGES_NPMRC: ${{ steps.PACKAGES_NPMRC.outputs.token_npmrc }}
-      steps:
-          - id: PACKAGES_NPMRC
-            env:
-                PACKAGES_NPMRC: ${{ secrets.PACKAGES_NPMRC }}
-            if: "${{ env.PACKAGES_NPMRC != '' }}"
-            run: echo "token_npmrc=true" >> $GITHUB_OUTPUT
-  check:
-    name: Check
     runs-on: ubuntu-latest
-    needs: [check-secret]
+    outputs:
+      PACKAGES_NPMRC: ${{ steps.PACKAGES_NPMRC.outputs.token_npmrc }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '18.x'
-      - if: needs.check-secret.outputs.PACKAGES_NPMRC == 'true'
-        name: Set NPM Variables
-        run: echo "$PACKAGES_NPMRC" > .npmrc
+      - id: PACKAGES_NPMRC
         env:
           PACKAGES_NPMRC: ${{ secrets.PACKAGES_NPMRC }}
-      - name: Install packages
-        run: yarn install
-      - name: Tests
-        run: yarn test
-      - name: Linter
-        run: yarn lint
+        if: "${{ env.PACKAGES_NPMRC != '' }}"
+        run: echo "token_npmrc=true" >> $GITHUB_OUTPUT
+
+  check:
+    name: Check React
+    uses: ./.github/workflows/check-react-shared.yml
+    needs: check-secret
+    secrets:
+      PACKAGES_NPMRC: ${{ env.PACKAGES_NPMRC }}
+    with:
+      IS_REQUIRED_SET_PACKAGES_NPMRC: ${{ needs.check-secret.outputs.PACKAGES_NPMRC }}

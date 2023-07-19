@@ -1,0 +1,34 @@
+name: Check React Shared
+
+on:
+  workflow_call:
+    secrets:
+      PACKAGES_NPMRC:
+        description: 'Token of the Builders Github Packages'
+        required: false
+    inputs:
+      IS_REQUIRED_SET_PACKAGES_NPMRC:
+        description: 'Is required set on .npmrc the PACKAGES_NPMRC'
+        required: false
+        default: true
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+      - if: inputs.IS_REQUIRED_SET_PACKAGES_NPMRC == 'true'
+        name: Set NPM Variables
+        run: echo "$PACKAGES_NPMRC" > .npmrc
+        env:
+          PACKAGES_NPMRC: ${{ secrets.PACKAGES_NPMRC }}
+      - name: Install packages
+        run: yarn install
+      - name: Tests
+        run: yarn test
+      - name: Linter
+        run: yarn lint
