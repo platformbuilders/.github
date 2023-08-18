@@ -19,7 +19,6 @@ on:
         required: false
         default: false
 
-
 jobs:
   check-secret:
       runs-on: ubuntu-latest
@@ -62,12 +61,12 @@ jobs:
         run: yarn install && yarn build
       - name: Clean .npmrc
         run: echo > .npmrc
-      - if: inputs.PROJECT_PRIVATE != 'true'
+      - if: ${{ !inputs.PROJECT_PRIVATE }}
         name: Publish NPM Public
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - if: inputs.PROJECT_PRIVATE == 'true'
+      - if: ${{ inputs.PROJECT_PRIVATE }}
         name: Publish NPM Private
         run: npm publish
         env:
